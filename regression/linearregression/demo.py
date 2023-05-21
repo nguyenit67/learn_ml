@@ -1,44 +1,29 @@
-def getmin(arr):
-    res = arr[0]
-
-    for i in range(1, len(arr)):
-        if res > arr[i]:
-            res = arr[i]
-
-    return res
+import numpy as np
 
 
-def getmax(arr):
-    res = arr[0]
+class LinearRegression:
+    def __init__(self, lr=0.01, n_iterations=50, seed=None) -> None:
+        self.lr = lr
+        self.n_iterations = n_iterations
+        self.weights = None
+        self.bias = None
 
-    for i in range(1, len(arr)):
-        if res < arr[i]:
-            res = arr[i]
+        # set seed
+        np.random.seed(seed)
 
-    return res
+    def fit(self, X, y):
+        n_samples, num_features = X.shape
 
+        self.weights = np.random.rand(num_features)
+        self.bias = np.random.rand(1)
 
-def getaverage(arr):
-    res = 0
+        self.total_loss = 0
 
-    for x in arr:
-        res += x
+        for _ in range(self.n_iterations):
+            y_pred = np.dot(X, self.weights) + self.bias
 
-    return res / len(arr)
+            cost = 1 / (2 * n_samples) * np.sum((y - y_pred) ** 2)
+            self.total_loss += cost(self.weights)
 
-
-def main():
-    arr = []
-    print("Nhap 10 so")
-
-    for i in range(10):
-        x = float(input(f"Nhap arr[{i}]= "))
-        arr.append(x)
-
-    print('Array= ', arr)
-    print('Min=', getmin(arr))
-    print('Max=', getmax(arr))
-    print('Average=', getaverage(arr))
-
-if __name__ == "__main__":
-  main()
+            dW = (1 / n_samples) * np.dot(X.T, y_pred - y)
+            db = (1 / n_samples) * np.sum(y_pred - y)
